@@ -16,6 +16,8 @@ public class EmpleadoAsalariado extends Empleado {
         return salarioMensual;
     }
 
+    public void setSalarioMensual(double salarioMensual) { this.salarioMensual = salarioMensual; }
+
     // Sueldo base = salario mensual
     @Override
     public double calcularSueldo() {

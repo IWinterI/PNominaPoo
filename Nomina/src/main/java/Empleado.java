@@ -15,6 +15,8 @@ public abstract class Empleado implements IPagable {
     public int getId() { return ID; }
     public String getNombre() { return Nombre; }
     public String getPuesto() { return Puesto; }
+    public void setNombre(String nombre) { this.Nombre = nombre; }
+    public void setPuesto(String puesto) { this.Puesto = puesto; }
 
     // Métodos abstractos que serán implementados por las subclases
     @Override

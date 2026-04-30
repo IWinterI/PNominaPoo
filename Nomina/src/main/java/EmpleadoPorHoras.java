@@ -17,6 +17,9 @@ public class EmpleadoPorHoras extends Empleado {
     public double getHorasTrabajadas() { return horasTrabajadas; }
     public double getTarifaHora() { return tarifaHora; }
 
+    public void setHorasTrabajadas(double horasTrabajadas) { this.horasTrabajadas = horasTrabajadas; }
+    public void setTarifaHora(double tarifaHora) { this.tarifaHora = tarifaHora; }
+
     // Sueldo base = horas normales * tarifa
     @Override
     public double calcularSueldo() {
