@@ -1,5 +1,11 @@
 import java.util.*;
 
+/*
+ Clase principal que implementa el sistema de nomina empresarial mediante un menu interactivo.
+ Gestiona empleados (altas, bajas, ediciones) y nominas (procesamiento, consulta, eliminacion).
+ Tipo de clase: clase principal (contiene el metodo main).
+ */
+
 public class main {
 
     private static List<Empleado> empleados = new ArrayList<>();
@@ -42,6 +48,7 @@ public class main {
     }
 
     // ---------- Métodos auxiliares ----------
+    /* Lee un entero desde el scanner, validando la entrada. */
     private static int leerEntero(Scanner sc) {
         while (true) {
             try {
@@ -52,6 +59,7 @@ public class main {
         }
     }
 
+    /* Lee un double positivo mostrando un mensaje. */
     private static double leerDoublePositivo(Scanner sc, String mensaje) {
         while (true) {
             System.out.print(mensaje);
@@ -68,6 +76,7 @@ public class main {
         }
     }
 
+    /* Lee un texto no vacio y que no sea solo numeros. */
     private static String leerTextoNoVacio(Scanner sc, String mensaje) {
         while (true) {
             System.out.print(mensaje);
@@ -84,6 +93,7 @@ public class main {
         }
     }
 
+    /* Lee un double positivo con opcion de conservar el valor actual. */
     private static double leerDoublePositivoOpcional(Scanner sc, String mensaje, double valorActual) {
         while (true) {
             System.out.print(mensaje + " [" + valorActual + "]: ");
@@ -104,6 +114,7 @@ public class main {
         }
     }
 
+    /* Lee un texto con opcion de conservar el valor actual. */
     private static String leerTextoOpcional(Scanner sc, String mensaje, String valorActual) {
         while (true) {
             System.out.print(mensaje + " [" + valorActual + "]: ");
@@ -119,6 +130,7 @@ public class main {
         }
     }
 
+    /* Solicita un ID hasta que exista un empleado con ese ID. */
     private static int leerIDExistente(Scanner sc, String mensaje) {
         while (true) {
             System.out.print(mensaje);
@@ -131,11 +143,14 @@ public class main {
         }
     }
 
+    /* Genera y retorna un nuevo ID secuencial. */
     private static int generarID() {
         return siguienteID++;
     }
 
     // ---------- Agregar empleados ----------
+    
+    /* Agrega un nuevo empleado asalariado. */
     private static void agregarAsalariado(Scanner sc) {
         String nombre = leerTextoNoVacio(sc, "Nombre: ");
         String puesto = leerTextoNoVacio(sc, "Puesto: ");
@@ -146,6 +161,7 @@ public class main {
         System.out.println("Empleado asalariado agregado con ID " + id);
     }
 
+     /* Agrega un nuevo empleado por horas. */
     private static void agregarPorHoras(Scanner sc) {
         String nombre = leerTextoNoVacio(sc, "Nombre: ");
         String puesto = leerTextoNoVacio(sc, "Puesto: ");
@@ -157,6 +173,8 @@ public class main {
     }
 
     // ---------- Editar empleado ----------
+    
+    /* Permite editar los datos de un empleado existente. */
     private static void editarEmpleado(Scanner sc) {
         if (empleados.isEmpty()) {
             System.out.println("No hay empleados registrados.");
@@ -195,6 +213,8 @@ public class main {
     }
 
     // ---------- Eliminar empleado ----------
+    
+    /* Elimina un empleado tras confirmar su ID. */
     private static void eliminarEmpleado(Scanner sc) {
         if (empleados.isEmpty()) {
             System.out.println("No hay empleados registrados.");
@@ -211,6 +231,8 @@ public class main {
     }
 
     // ---------- Listar empleados ----------
+    
+    /* Muestra la lista completa de empleados con sus detalles. */
     private static void listarEmpleados() {
         if (empleados.isEmpty()) {
             System.out.println("No hay empleados registrados.");
@@ -229,6 +251,7 @@ public class main {
         }
     }
 
+    /* Busca un empleado por ID; retorna null si no existe. */
     private static Empleado buscarEmpleadoPorID(int id) {
         for (Empleado e : empleados) {
             if (e.getId() == id) return e;
@@ -237,16 +260,20 @@ public class main {
     }
 
     // ---------- Listar y ver nominas ----------
+    
+    /* Lista todas las nominas almacenadas. */
     private static void listarNominas() {
         registroNominas.Listar_Nomina();
     }
 
+    /* Muestra el detalle de una nomina segun un indice. */
     private static void verDetalleNomina(Scanner sc) {
         System.out.print("Ingrese el indice de la nomina a detallar: ");
         int idx = leerEntero(sc);
         registroNominas.Ver_Detalles(idx);
     }
 
+    /* Elimina una nomina por indice. */
     private static void eliminarNomina(Scanner sc) {
         System.out.print("Ingrese el indice de la nomina a eliminar: ");
         int idx = leerEntero(sc);
