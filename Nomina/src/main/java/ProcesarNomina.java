@@ -116,7 +116,7 @@ public class ProcesarNomina {
         Nomina nomina;
         if (datos.empleado instanceof EmpleadoAsalariado) {
             nomina = new NominaAsalariado(new Date(), datos.empleado,
-                                          datos.tarifaHoraExtra);
+                                        datos.tarifaHoraExtra);
         } else {
             nomina = new NominaPorHoras(new Date(), datos.empleado,
                                         datos.tarifaHoraExtra,
@@ -128,7 +128,9 @@ public class ProcesarNomina {
             nomina.calcularSueldo(datos.bono, datos.horasExtra);
         } else if (datos.bono > 0) {
             nomina.calcularSueldo(datos.bono);
-        } else {
+        } else if (datos.horasExtra > 0) {
+            nomina.calcularSueldo(datos.horasExtra);
+        }else {
             nomina.calcularSueldo();
         }
         return nomina;

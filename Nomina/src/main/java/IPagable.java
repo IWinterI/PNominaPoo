@@ -25,4 +25,10 @@ public interface IPagable {
      Total a pagar.
      */
     double calcularSueldo(double bono, int horasExtra);
+
+    /*
+     Calcula el sueldo incluyendo un número de horas extra.
+     horasExtra Cantidad de horas extra trabajadas.
+    */
+    double calcularSueldo(int horasExtra);
 }

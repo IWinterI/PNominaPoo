@@ -38,8 +38,9 @@ public class NominaAsalariado extends Nomina {
     @Override
     protected double calcularHorasExtra(int horasExtra) {
         set_HorasExtra(horasExtra);
-        set_HorasExtraPago(horasExtra * get_TarifaHoraExtra());
-        return get_HorasExtraPago();
+        double Total = horasExtra * get_TarifaHoraExtra(); 
+        set_HorasExtraPago(Total);
+        return Total;
     }
 
     /*
@@ -62,6 +63,18 @@ public class NominaAsalariado extends Nomina {
         this.Sueldo = TEmpleado().getSalarioMensual();
         this.Bono = Bono;
         double Total = TEmpleado().getSalarioMensual() + Bono;
+        set_Total(Total);
+        return Total;
+    }
+
+    /*
+    Calcula sueldo añadiendo horas extra.
+    */
+    @Override
+    public double calcularSueldo(int HorasExtra) {
+        this.Sueldo = TEmpleado().getSalarioMensual();
+        this.Bono = 0;
+        double Total = TEmpleado().getSalarioMensual() + calcularHorasExtra(HorasExtra);
         set_Total(Total);
         return Total;
     }
