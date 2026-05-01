@@ -1,13 +1,12 @@
 import java.util.*;
 
 public class main {
-    
+
     private static List<Empleado> empleados = new ArrayList<>();
     private static int siguienteID = 1;
     private static RegistroNomina registroNominas = new RegistroNomina();
 
     public static void main(String[] args) {
-        
         Scanner sc = new Scanner(System.in);
         int opcion;
         do {
@@ -23,11 +22,13 @@ public class main {
             System.out.println("9. Eliminar nómina");
             System.out.println("0. Salir");
             System.out.print("Seleccione una opción: ");
-            try {
-                opcion = Integer.parseInt(sc.nextLine());
-            } catch (NumberFormatException e) {
-                opcion = -1;
+
+            opcion = leerEntero(sc);
+            if (opcion < 0 || opcion > 9) {
+                System.out.println("Opción inválida. Intente de nuevo.");
+                continue;
             }
+
             switch (opcion) {
                 case 1: agregarAsalariado(sc); break;
                 case 2: agregarPorHoras(sc); break;
@@ -39,23 +40,127 @@ public class main {
                 case 8: verDetalleNomina(sc); break;
                 case 9: eliminarNomina(sc); break;
                 case 0: System.out.println("Saliendo del sistema..."); break;
-                default: System.out.println("Opción inválida. Intente de nuevo.");
             }
         } while (opcion != 0);
         sc.close();
     }
+
+    // ---------- Métodos auxiliares de validación ----------
+
+    /** Lee un entero positivo o 0, continuamente hasta que sea válido. */
+    private static int leerEntero(Scanner sc) {
+        while (true) {
+            try {
+                return Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.print("Error: Debe ingresar un número entero. Intente de nuevo: ");
+            }
+        }
+    }
+
+    /** Lee un número decimal positivo (>0), repitiendo hasta que sea válido. */
+    private static double leerDoublePositivo(Scanner sc, String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+            try {
+                double valor = Double.parseDouble(sc.nextLine());
+                if (valor <= 0) {
+                    System.out.println("Error: El valor debe ser positivo.");
+                    continue;
+                }
+                return valor;
+            } catch (NumberFormatException e) {
+                System.out.println("Error: Entrada no numérica.");
+            }
+        }
+    }
+
+    /** Lee un texto no vacío que no esté formado solo por dígitos. */
+    private static String leerTextoNoVacio(Scanner sc, String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+            String input = sc.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("Error: Este campo no puede estar vacío.");
+                continue;
+            }
+            if (input.matches("\\d+")) {   // solo dígitos
+                System.out.println("Error: El valor no puede ser solo números.");
+                continue;
+            }
+            return input;
+        }
+    }
+    /**
+     * Para edición: muestra el valor actual entre corchetes.
+     * Si el usuario solo presiona Enter, se mantiene el valorActual.
+     * Si ingresa algo, valida que sea un número positivo (>0).
+     */
+    private static double leerDoublePositivoOpcional(Scanner sc, String mensaje, double valorActual) {
+        while (true) {
+            System.out.print(mensaje + " [" + valorActual + "]: ");
+            String input = sc.nextLine().trim();
+            if (input.isEmpty()) {
+                return valorActual;
+            }
+            try {
+                double valor = Double.parseDouble(input);
+                if (valor <= 0) {
+                    System.out.println("Error: El valor debe ser positivo.");
+                    continue;
+                }
+                return valor;
+            } catch (NumberFormatException e) {
+                System.out.println("Error: Entrada no numérica.");
+            }
+        }
+    }
+
+    /**
+    * Versión opcional para textos: si se ingresa Enter se mantiene el actual.
+    * Si se ingresa algo nuevo, no puede estar vacío ni ser solo números.
+    */
+   private static String leerTextoOpcional(Scanner sc, String mensaje, String valorActual) {
+       while (true) {
+           System.out.print(mensaje + " [" + valorActual + "]: ");
+           String input = sc.nextLine().trim();
+           if (input.isEmpty()) {
+               return valorActual;
+           }
+           if (input.matches("\\d+")) {
+               System.out.println("Error: El valor no puede ser solo números.");
+               continue;
+           }
+           return input;
+       }
+   }
+
+    /**
+     * Lee un ID de empleado existente; si no existe, vuelve a pedir.
+     * Devuelve el ID válido.
+     */
+    private static int leerIDExistente(Scanner sc, String mensaje) {
+        while (true) {
+            System.out.print(mensaje);
+            int id = leerEntero(sc);
+            if (buscarEmpleadoPorID(id) == null) {
+                System.out.println("No existe un empleado con ID " + id + ". Intente de nuevo.");
+                continue;
+            }
+            return id;
+        }
+    }
+
+    // ---------- Funcionalidad del sistema ----------
 
     private static int generarID() {
         return siguienteID++;
     }
 
     private static void agregarAsalariado(Scanner sc) {
-        System.out.print("Nombre: ");
-        String nombre = sc.nextLine();
-        System.out.print("Puesto: ");
-        String puesto = sc.nextLine();
-        System.out.print("Salario mensual: ");
-        double salario = Double.parseDouble(sc.nextLine());
+        String nombre = leerTextoNoVacio(sc, "Nombre: ");
+        String puesto = leerTextoNoVacio(sc, "Puesto: ");
+        double salario = leerDoublePositivo(sc, "Salario mensual: ");
         int id = generarID();
         Empleado e = new EmpleadoAsalariado(id, nombre, puesto, salario);
         empleados.add(e);
@@ -63,14 +168,10 @@ public class main {
     }
 
     private static void agregarPorHoras(Scanner sc) {
-        System.out.print("Nombre: ");
-        String nombre = sc.nextLine();
-        System.out.print("Puesto: ");
-        String puesto = sc.nextLine();
-        System.out.print("Horas trabajadas: ");
-        double horas = Double.parseDouble(sc.nextLine());
-        System.out.print("Tarifa por hora: ");
-        double tarifa = Double.parseDouble(sc.nextLine());
+        String nombre = leerTextoNoVacio(sc, "Nombre: ");
+        String puesto = leerTextoNoVacio(sc, "Puesto: ");
+        double horas = leerDoublePositivo(sc, "Horas trabajadas: ");
+        double tarifa = leerDoublePositivo(sc, "Tarifa por hora: ");
         int id = generarID();
         Empleado e = new EmpleadoPorHoras(id, nombre, puesto, horas, tarifa);
         empleados.add(e);
@@ -78,57 +179,63 @@ public class main {
     }
 
     private static void editarEmpleado(Scanner sc) {
-        System.out.print("Ingrese ID del empleado a editar: ");
-        int id = Integer.parseInt(sc.nextLine());
-        Empleado emp = buscarEmpleadoPorID(id);
-        if (emp == null) {
-            System.out.println("No existe empleado con ID " + id);
+        if (empleados.isEmpty()) {
+            System.out.println("No hay empleados registrados.");
             return;
         }
-        System.out.print("Nuevo nombre (Enter para mantener [" + emp.getNombre() + "]): ");
-        String nombre = sc.nextLine();
-        if (!nombre.isEmpty()) {
-            emp.setNombre(nombre);   // Requiere agregar setter en clase abstracta Empleado
+        System.out.println("--- Lista de empleados ---");
+        for (Empleado e : empleados) {
+            String tipo = (e instanceof EmpleadoAsalariado) ? "Asalariado" : "Por Horas";
+            System.out.println("ID: " + e.getId() + " | " + e.getNombre() + " | " + e.getPuesto() + " | Tipo: " + tipo);
+            if (e instanceof EmpleadoAsalariado) {
+                System.out.println("   Salario Mensual: " + ((EmpleadoAsalariado) e).getSalarioMensual());
+            } else {
+                EmpleadoPorHoras eph = (EmpleadoPorHoras) e;
+                System.out.println("   Horas: " + eph.getHorasTrabajadas() + " | Tarifa: " + eph.getTarifaHora());
+            }
         }
-        System.out.print("Nuevo puesto (Enter para mantener [" + emp.getPuesto() + "]): ");
-        String puesto = sc.nextLine();
-        if (!puesto.isEmpty()) {
-            emp.setPuesto(puesto);
-        }
+
+        int id = leerIDExistente(sc, "Ingrese ID del empleado a editar: ");
+        Empleado emp = buscarEmpleadoPorID(id); // nunca null por la validación
+
+        String nombre = leerTextoOpcional(sc, "Nuevo nombre", emp.getNombre());
+        emp.setNombre(nombre);
+        String puesto = leerTextoOpcional(sc, "Nuevo puesto", emp.getPuesto());
+        emp.setPuesto(puesto);
 
         if (emp instanceof EmpleadoAsalariado) {
             EmpleadoAsalariado ea = (EmpleadoAsalariado) emp;
-            System.out.print("Nuevo salario mensual (Enter para mantener [" + ea.getSalarioMensual() + "]): ");
-            String salarioStr = sc.nextLine();
-            if (!salarioStr.isEmpty()) {
-                ea.setSalarioMensual(Double.parseDouble(salarioStr));
-            }
+            double nuevoSalario = leerDoublePositivoOpcional(sc, "Nuevo salario mensual", ea.getSalarioMensual());
+            ea.setSalarioMensual(nuevoSalario);
         } else if (emp instanceof EmpleadoPorHoras) {
             EmpleadoPorHoras eph = (EmpleadoPorHoras) emp;
-            System.out.print("Nuevas horas trabajadas (Enter para mantener [" + eph.getHorasTrabajadas() + "]): ");
-            String horasStr = sc.nextLine();
-            if (!horasStr.isEmpty()) {
-                eph.setHorasTrabajadas(Double.parseDouble(horasStr));
-            }
-            System.out.print("Nueva tarifa por hora (Enter para mantener [" + eph.getTarifaHora() + "]): ");
-            String tarifaStr = sc.nextLine();
-            if (!tarifaStr.isEmpty()) {
-                eph.setTarifaHora(Double.parseDouble(tarifaStr));
-            }
+            double nuevasHoras = leerDoublePositivoOpcional(sc, "Nuevas horas trabajadas", eph.getHorasTrabajadas());
+            eph.setHorasTrabajadas(nuevasHoras);
+            double nuevaTarifa = leerDoublePositivoOpcional(sc, "Nueva tarifa por hora", eph.getTarifaHora());
+            eph.setTarifaHora(nuevaTarifa);
         }
         System.out.println("Empleado actualizado.");
     }
 
     private static void eliminarEmpleado(Scanner sc) {
-        System.out.print("Ingrese ID del empleado a eliminar: ");
-        int id = Integer.parseInt(sc.nextLine());
-        Empleado emp = buscarEmpleadoPorID(id);
-        if (emp != null) {
-            empleados.remove(emp);
-            System.out.println("Empleado con ID " + id + " eliminado.");
-        } else {
-            System.out.println("No se encontró empleado con ese ID.");
+        if (empleados.isEmpty()) {
+            System.out.println("No hay empleados registrados.");
+            return;
         }
+        System.out.println("--- Lista de empleados ---");
+        for (Empleado e : empleados) {
+            String tipo = (e instanceof EmpleadoAsalariado) ? "Asalariado" : "Por Horas";
+            System.out.println("ID: " + e.getId() + " | " + e.getNombre() + " | " + e.getPuesto() + " | Tipo: " + tipo);
+            if (e instanceof EmpleadoAsalariado) {
+                System.out.println("   Salario Mensual: " + ((EmpleadoAsalariado) e).getSalarioMensual());
+            } else {
+                EmpleadoPorHoras eph = (EmpleadoPorHoras) e;
+                System.out.println("   Horas: " + eph.getHorasTrabajadas() + " | Tarifa: " + eph.getTarifaHora());
+            }
+        }
+        int id = leerIDExistente(sc, "Ingrese ID del empleado a eliminar: ");
+        empleados.remove(buscarEmpleadoPorID(id));
+        System.out.println("Empleado con ID " + id + " eliminado.");
     }
 
     private static void listarEmpleados() {
@@ -172,13 +279,13 @@ public class main {
 
     private static void verDetalleNomina(Scanner sc) {
         System.out.print("Ingrese el índice de la nómina a detallar: ");
-        int idx = Integer.parseInt(sc.nextLine());
+        int idx = leerEntero(sc);
         registroNominas.Ver_Detalles(idx);
     }
 
     private static void eliminarNomina(Scanner sc) {
         System.out.print("Ingrese el índice de la nómina a eliminar: ");
-        int idx = Integer.parseInt(sc.nextLine());
+        int idx = leerEntero(sc);
         boolean ok = registroNominas.Eliminar_nomina(idx);
         if (ok) {
             System.out.println("Nómina eliminada.");

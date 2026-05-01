@@ -22,7 +22,7 @@ public class RegistroNomina {
 
         for (int i = 0; i < Registro.size(); i++){
             Nomina n = Registro.get(i);
-                System.out.println("[" + i + "] Empleado: " + n.get_Fecha() + n.get_Empleado().getNombre());
+                System.out.println("[" + i + "] Empleado: " + n.get_Fecha() + " - " +n.get_Empleado().getNombre());
         }
     }
 
