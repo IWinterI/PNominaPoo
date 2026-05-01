@@ -11,28 +11,7 @@ public class EmpleadoAsalariado extends Empleado {
         super(ID, Nombre, Puesto);
         this.salarioMensual = salarioMensual;
     }
-    /*Getter del atributo*/
-    public double getSalarioMensual() {
-        return salarioMensual;
-    }
 
+    public double getSalarioMensual() { return salarioMensual; }
     public void setSalarioMensual(double salarioMensual) { this.salarioMensual = salarioMensual; }
-
-    // Sueldo base = salario mensual
-    @Override
-    public double calcularSueldo() {
-        return salarioMensual;
-    }
-
-    // Sueldo con bono
-    @Override
-    public double calcularSueldo(double bono) {
-        return salarioMensual + bono;
-    }
-
-    // Sueldo con bono y horas extra (se suman como monto adicional)
-    @Override
-    public double calcularSueldo(double bono, double horasExtra) {
-        return salarioMensual + bono + horasExtra;
-    }
 }

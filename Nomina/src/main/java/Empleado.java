@@ -1,7 +1,7 @@
 /**
  Clase padre adstracta con la implementacion de la interfaz IPagable
  */
-public abstract class Empleado implements IPagable {
+public abstract class Empleado {
     private int ID;
     private String Nombre;
     private String Puesto;
@@ -17,14 +17,4 @@ public abstract class Empleado implements IPagable {
     public String getPuesto() { return Puesto; }
     public void setNombre(String nombre) { this.Nombre = nombre; }
     public void setPuesto(String puesto) { this.Puesto = puesto; }
-
-    // Métodos abstractos que serán implementados por las subclases
-    @Override
-    public abstract double calcularSueldo();
-
-    @Override
-    public abstract double calcularSueldo(double bono);
-
-    @Override
-    public abstract double calcularSueldo(double bono, double horasExtra);
 }

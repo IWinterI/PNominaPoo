@@ -7,5 +7,5 @@ public interface IPagable {
 
     double calcularSueldo(double bono);
 
-    double calcularSueldo(double bono, double horasExtra);
+    double calcularSueldo(double bono, int horasExtra);
 }
