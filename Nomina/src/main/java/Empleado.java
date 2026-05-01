@@ -1,9 +1,13 @@
+import java.io.Serializable;
+
 /*
  Clase abstracta que representa a un empleado generico de la empresa.
  Sirve como clase base para los distintos tipos de empleado (asalariados, por horas).
  Tipo de clase: clase abstracta (padre de la jerarquía de empleados).
  */
-public abstract class Empleado {
+
+public abstract class Empleado implements Serializable{
+    private static final long serialVersionUID = 1L;
     private int ID;
     private String Nombre;
     private String Puesto;

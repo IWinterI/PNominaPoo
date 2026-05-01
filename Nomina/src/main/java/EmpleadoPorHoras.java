@@ -1,10 +1,14 @@
+import java.io.Serializable;
+
 /*
  Clase concreta que extiende Empleado para representar un empleado que cobra por horas trabajadas.
  Añade el atributo tarifaHora (precio por hora normal) y sus metodos de acceso.
  Es utilizada por la clase NominaPorHoras para calcular los sueldos.
  Tipo de clase: subclase concreta (hereda de Empleado).
  */
-public class EmpleadoPorHoras extends Empleado {
+
+public class EmpleadoPorHoras extends Empleado implements Serializable{
+    private static final long serialVersionUID = 1L;
     private double tarifaHora;
 
     

@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.io.Serializable;
 
 /*
  Nomina concreta para empleados por horas.
@@ -6,7 +7,10 @@ import java.util.Date;
  posibles bonos y horas extra.
  Tipo de clase: subclase concreta (hereda de Nomina).
  */
-public class NominaPorHoras extends Nomina {
+
+public class NominaPorHoras extends Nomina implements Serializable{
+
+    private static final long serialVersionUID = 1L;
     private double HorasTrabajadas;
     private double TarifaHora;
     private double Bono;

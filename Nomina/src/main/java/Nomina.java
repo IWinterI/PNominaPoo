@@ -1,4 +1,5 @@
 import java.util.Date;
+import java.io.Serializable;
 
 /*
  Clase abstracta que implementa IPagable y representa el concepto generico de una nomina.
@@ -7,8 +8,10 @@ import java.util.Date;
  Las subclases concretas (NominaAsalariado, NominaPorHoras) implementan estos calculos.
  Tipo de clase: clase abstracta (padre de la jerarquía de nóminas).
  */
-public abstract class Nomina implements IPagable {
 
+public abstract class Nomina implements IPagable, Serializable{
+
+    private static final long serialVersionUID = 1L;
     private Date Fecha;
     private Empleado Empleado;       // referencia al empleado (polimorfica, puede ser asalariado o por horas)
     private int HorasExtra;

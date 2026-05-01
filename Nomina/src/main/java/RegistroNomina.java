@@ -64,4 +64,11 @@ public class RegistroNomina {
         registro.remove(i);
         return true;
     }
+
+    public void reemplazarNominas(List<Nomina> nuevas) {
+        registro.clear();
+        registro.addAll(nuevas);
+    }
+    
+    public List<Nomina> getNominas() { return new ArrayList<>(registro); }
 }

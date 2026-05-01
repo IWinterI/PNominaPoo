@@ -1,3 +1,9 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.*;
 
 /*
@@ -11,6 +17,7 @@ public class main {
     private static List<Empleado> empleados = new ArrayList<>();
     private static int siguienteID = 1;
     private static RegistroNomina registroNominas = new RegistroNomina();
+    private static final String ARCHIVO_DATOS = "datos_sistema.ser";
 
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
@@ -26,6 +33,8 @@ public class main {
             System.out.println("7. Listar nominas registradas");
             System.out.println("8. Ver detalle de nomina");
             System.out.println("9. Eliminar nomina");
+            System.out.println("10. Guardar datos");
+            System.out.println("11. Cargar datos");
             System.out.println("0. Salir");
             System.out.print("Seleccione una opción: ");
             opcion = leerEntero(sc);
@@ -40,6 +49,8 @@ public class main {
                 case 7: listarNominas(); break;
                 case 8: verDetalleNomina(sc); break;
                 case 9: eliminarNomina(sc); break;
+                case 10: guardarDatos(); break;
+                case 11: cargarDatos(); break;
                 case 0: System.out.println("Saliendo del sistema..."); break;
                 default: System.out.println("Opcion invalida. Intente de nuevo.");
             }
@@ -284,4 +295,46 @@ public class main {
             System.out.println("No se pudo eliminar (indice fuera de rango).");
         }
     }
+
+    // 
+
+    private static void guardarDatos() {
+        // Recogemos las listas actuales
+        List<Nomina> nominas = registroNominas.getNominas();
+        Data data = new Data(empleados, nominas);
+        try (ObjectOutputStream out = new ObjectOutputStream(
+                new FileOutputStream(ARCHIVO_DATOS))) {
+            out.writeObject(data);
+            System.out.println("Datos guardados correctamente en " + ARCHIVO_DATOS);
+        } catch (IOException e) {
+            System.err.println("Error al guardar los datos: " + e.getMessage());
+        }
+    }
+
+    private static void cargarDatos() {
+        File archivo = new File(ARCHIVO_DATOS);
+        if (!archivo.exists()) {
+            System.out.println("No se encontró el archivo " + ARCHIVO_DATOS);
+            return;
+        }
+        try (ObjectInputStream in = new ObjectInputStream(
+                new FileInputStream(ARCHIVO_DATOS))) {
+            Data data = (Data) in.readObject();
+            empleados = data.getEmpleados();
+            // Reemplazar la lista interna del registro (requiere un metodo setNominas o limpiar y agregar)
+            registroNominas.reemplazarNominas(data.getNominas());
+            // Recalcular el siguienteID
+            siguienteID = 1;
+            for (Empleado e : empleados) {
+                if (e.getId() >= siguienteID) {
+                    siguienteID = e.getId() + 1;
+                }
+            }
+            System.out.println("Datos cargados correctamente. Empleados: " + empleados.size() +
+                                ", Nóminas: " + registroNominas.getNominas().size());
+        } catch (IOException | ClassNotFoundException e) {
+            System.err.println("Error al cargar los datos: " + e.getMessage());
+        }
+    }
+
 }

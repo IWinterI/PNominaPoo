@@ -1,10 +1,14 @@
+import java.io.Serializable;
+
 /*
  Clase concreta que extiende Empleado para representar un empleado que recibe un salario mensual fijo.
  Añade el atributo salarioMensual y sus metodos de acceso.
  Es utilizada por la clase NominaAsalariado para calcular los sueldos.
  Tipo de clase: subclase concreta (hereda de Empleado).
  */
-public class EmpleadoAsalariado extends Empleado {
+
+public class EmpleadoAsalariado extends Empleado implements Serializable{
+    private static final long serialVersionUID = 1L;
     private double salarioMensual;
     
     /*
