@@ -68,24 +68,23 @@ public class VentanaM extends javax.swing.JFrame {
 
         // --- Añadir listeners para los botones de datos ---
         jButton4.addActionListener(evt -> {
-            main.guardarDatosGUI();
-            JOptionPane.showMessageDialog(this, "Datos guardados correctamente.", "Guardar", JOptionPane.INFORMATION_MESSAGE);
-        });
-        
-        jButton5.addActionListener(evt -> {
-            main.cargarDatosGUI();
-            // Refrescar las tablas después de cargar
-            cargarEmpleadosEnGUI();
-            cargarNominasEnGUI();
-            // Si la vista actual es nóminas, actualizar la visualización
-            if (panelNominas.isShowing()) {
-                cardLayout.show(panelCentral, "nominas");
-            } else {
-                cardLayout.show(panelCentral, "empleados");
-            }
-            JOptionPane.showMessageDialog(this, "Datos cargados correctamente.", "Cargar", JOptionPane.INFORMATION_MESSAGE);
-        });
-    }
+        main.cargarDatosGUI();
+        cargarEmpleadosEnGUI();
+        cargarNominasEnGUI();
+        // Mantener la vista actual
+        if (panelNominas.isShowing()) {
+            cardLayout.show(panelCentral, "nominas");
+        } else {
+            cardLayout.show(panelCentral, "empleados");
+        }
+        JOptionPane.showMessageDialog(this, "Datos cargados correctamente.", "Cargar", JOptionPane.INFORMATION_MESSAGE);
+    });
+    
+    jButton5.addActionListener(evt -> {
+        main.guardarDatosGUI();
+        JOptionPane.showMessageDialog(this, "Datos guardados correctamente.", "Guardar", JOptionPane.INFORMATION_MESSAGE);
+    });
+}
 
     // Configura la tabla de empleados (estilo similar a la de nóminas)
     private void configurarVistaEmpleados() {
