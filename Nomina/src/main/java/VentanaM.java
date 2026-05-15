@@ -7,6 +7,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -44,7 +45,14 @@ public class VentanaM extends javax.swing.JFrame {
         getContentPane().removeAll();
         getContentPane().setLayout(new BorderLayout(10, 10));
         
+        // Panel izquierdo (ocupa toda la altura)
         getContentPane().add(jPanel1, BorderLayout.WEST);
+
+        // Panel izquierdo: asegurar que se expanda verticalmente
+        jPanel1.setPreferredSize(new Dimension(jPanel1.getPreferredSize().width, Integer.MAX_VALUE));
+        getContentPane().add(jPanel1, BorderLayout.WEST);
+
+        // Panel superior: ocupará todo el ancho restante
         getContentPane().add(jPanel2, BorderLayout.NORTH);
         
         configurarVistaEmpleados();
