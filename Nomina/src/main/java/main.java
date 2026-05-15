@@ -1,3 +1,4 @@
+import java.awt.Component;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -5,7 +6,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.*;
-
+import javax.swing.*;
+ 
 /*
  Clase principal que implementa el sistema de nomina empresarial mediante un menu interactivo.
  Gestiona empleados (altas, bajas, ediciones) y nominas (procesamiento, consulta, eliminacion).
@@ -36,7 +38,7 @@ public class main {
             System.out.println("10. Guardar datos");
             System.out.println("11. Cargar datos");
             System.out.println("0. Salir");
-            System.out.print("Seleccione una opción: ");
+            System.out.print("Seleccione una opcion: ");
             opcion = leerEntero(sc);
 
             switch (opcion) {
@@ -336,5 +338,172 @@ public class main {
             System.err.println("Error al cargar los datos: " + e.getMessage());
         }
     }
+    // ========== MÉTODOS PÚBLICOS PARA LA INTERFAZ GRÁFICA ==========
+    public static EmpleadoAsalariado agregarEmpleadoAsalariadoGUI(String nombre, String puesto, double salarioMensual) {
+        int id = generarID();
+        EmpleadoAsalariado emp = new EmpleadoAsalariado(id, nombre, puesto, salarioMensual);
+        empleados.add(emp);
+        return emp;
+    }
 
+    public static EmpleadoPorHoras agregarEmpleadoPorHorasGUI(String nombre, String puesto, double tarifaHora) {
+        int id = generarID();
+        EmpleadoPorHoras emp = new EmpleadoPorHoras(id, nombre, puesto, tarifaHora);
+        empleados.add(emp);
+        return emp;
+    }
+
+    public static List<Empleado> getEmpleados() {
+        return empleados;
+    }
+
+    public static boolean editarEmpleadoGUI(int id, String nuevoNombre, String nuevoPuesto,
+                                             Double nuevoSalario, Double nuevaTarifa) {
+        Empleado emp = buscarEmpleadoPorID(id);
+        if (emp == null) return false;
+        if (nuevoNombre != null && !nuevoNombre.trim().isEmpty()) emp.setNombre(nuevoNombre.trim());
+        if (nuevoPuesto != null && !nuevoPuesto.trim().isEmpty()) emp.setPuesto(nuevoPuesto.trim());
+        if (emp instanceof EmpleadoAsalariado && nuevoSalario != null && nuevoSalario > 0)
+            ((EmpleadoAsalariado) emp).setSalarioMensual(nuevoSalario);
+        else if (emp instanceof EmpleadoPorHoras && nuevaTarifa != null && nuevaTarifa > 0)
+            ((EmpleadoPorHoras) emp).setTarifaHora(nuevaTarifa);
+        return true;
+    }
+
+    public static boolean eliminarEmpleadoGUI(int id) {
+        Empleado emp = buscarEmpleadoPorID(id);
+        if (emp == null) return false;
+        return empleados.remove(emp);
+    }
+
+    public static void recalcularSiguienteID() {
+        int max = 0;
+        for (Empleado e : empleados) if (e.getId() > max) max = e.getId();
+        siguienteID = max + 1;
+    }
+
+    // --- Métodos para nóminas desde GUI ---
+    public static RegistroNomina getRegistroNominas() {
+        return registroNominas;
+    }
+
+    public static void procesarNominasGUI(Component parent) {
+        if (empleados.isEmpty()) {
+            JOptionPane.showMessageDialog(parent, "No hay empleados registrados.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        for (Empleado emp : empleados) {
+            // 1. Tarifa hora extra
+            double tarifaHoraExtra;
+            while (true) {
+                String input = JOptionPane.showInputDialog(parent,
+                        "Empleado: " + emp.getNombre() + " (ID " + emp.getId() + ")\nIngrese la tarifa por hora extra:",
+                        "Procesar nómina", JOptionPane.QUESTION_MESSAGE);
+                if (input == null) return; // cancelar todo el proceso
+                try {
+                    tarifaHoraExtra = Double.parseDouble(input);
+                    if (tarifaHoraExtra <= 0) throw new NumberFormatException();
+                    break;
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(parent, "Valor inválido. Debe ser un número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+
+            // 2. Bono
+            double bono = 0;
+            int respBono = JOptionPane.showConfirmDialog(parent, "¿Aplica bono para " + emp.getNombre() + "?", "Bono", JOptionPane.YES_NO_OPTION);
+            if (respBono == JOptionPane.YES_OPTION) {
+                while (true) {
+                    String input = JOptionPane.showInputDialog(parent, "Monto del bono:");
+                    if (input == null) return;
+                    try {
+                        bono = Double.parseDouble(input);
+                        if (bono <= 0) throw new NumberFormatException();
+                        break;
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(parent, "Monto inválido. Debe ser positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+
+            // 3. Horas extra
+            int horasExtra = 0;
+            int respHE = JOptionPane.showConfirmDialog(parent, "¿Aplica horas extra para " + emp.getNombre() + "?", "Horas extra", JOptionPane.YES_NO_OPTION);
+            if (respHE == JOptionPane.YES_OPTION) {
+                while (true) {
+                    String input = JOptionPane.showInputDialog(parent, "Cantidad de horas extra:");
+                    if (input == null) return;
+                    try {
+                        horasExtra = Integer.parseInt(input);
+                        if (horasExtra <= 0) throw new NumberFormatException();
+                        break;
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(parent, "Cantidad inválida. Debe ser entero positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+
+            // 4. Crear nómina según tipo
+            Nomina nomina;
+            if (emp instanceof EmpleadoAsalariado) {
+                nomina = new NominaAsalariado(new Date(), emp, tarifaHoraExtra);
+                if (bono > 0 && horasExtra > 0)
+                    nomina.calcularSueldo(bono, horasExtra);
+                else if (bono > 0)
+                    nomina.calcularSueldo(bono);
+                else if (horasExtra > 0)
+                    nomina.calcularSueldo(horasExtra);
+                else
+                    nomina.calcularSueldo();
+            } else { // EmpleadoPorHoras
+                double horasTrabajadas;
+                while (true) {
+                    String input = JOptionPane.showInputDialog(parent,
+                            "Empleado por horas: " + emp.getNombre() + "\nHoras trabajadas en el periodo:");
+                    if (input == null) return;
+                    try {
+                        horasTrabajadas = Double.parseDouble(input);
+                        if (horasTrabajadas <= 0) throw new NumberFormatException();
+                        break;
+                    } catch (NumberFormatException e) {
+                        JOptionPane.showMessageDialog(parent, "Horas trabajadas inválidas. Debe ser número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                nomina = new NominaPorHoras(new Date(), emp, tarifaHoraExtra, horasTrabajadas);
+                if (bono > 0 && horasExtra > 0)
+                    nomina.calcularSueldo(bono, horasExtra);
+                else if (bono > 0)
+                    nomina.calcularSueldo(bono);
+                else if (horasExtra > 0)
+                    nomina.calcularSueldo(horasExtra);
+                else
+                    nomina.calcularSueldo();
+            }
+
+            registroNominas.Cargar_Nomina(nomina);
+        }
+
+        JOptionPane.showMessageDialog(parent, "Nóminas procesadas correctamente.\nTotal de nóminas registradas: " + registroNominas.getNominas().size(),
+                "Éxito", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public static boolean eliminarNominaGUI(int index) {
+        return registroNominas.Eliminar_nomina(index);
+    }
+
+    public static String getNominaDetails(int index) {
+        List<Nomina> nominas = registroNominas.getNominas();
+        if (index < 0 || index >= nominas.size()) return null;
+        Nomina n = nominas.get(index);
+        return n.toString(); // Usamos el toString ya implementado en las subclases
+    }
+    
+    public static void guardarDatosGUI() {
+        guardarDatos();
+    }
+
+    public static void cargarDatosGUI() {
+        cargarDatos();
+    }
 }
