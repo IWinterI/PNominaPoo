@@ -1,4 +1,5 @@
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /*
@@ -26,17 +27,7 @@ public class RegistroNomina {
     La iteración sobre CopyOnWriteArrayList es segura aunque ocurran modificaciones concurrentes.
      */
     public void Listar_Nomina() {
-        if (registro.isEmpty()) {
-            System.out.println("El registro está vacío");
-            return;
-        }
-        int i = 0;
-        for (Nomina n : registro) {
-            System.out.println("[" + i + "] Fecha: " + n.get_Fecha() +
-                                " - Empleado: " + n.get_Empleado().getNombre() +
-                                " - Total: " + n.get_Total());
-            i++;
-        }
+        // Método mantenido por compatibilidad; la GUI utiliza getNominas() directamente.
     }
 
     /*
@@ -45,10 +36,8 @@ public class RegistroNomina {
      */
     public void Ver_Detalles(int i) {
         if (i < 0 || i >= registro.size()) {
-            System.out.println("Índice fuera de rango");
             return;
         }
-        System.out.println(registro.get(i));
     }
 
     /*
@@ -58,7 +47,6 @@ public class RegistroNomina {
      */
     public Boolean Eliminar_nomina(int i) {
         if (i < 0 || i >= registro.size()) {
-            System.out.println("Índice fuera de rango");
             return false;
         }
         registro.remove(i);
