@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -22,33 +18,27 @@ public class VentanaM extends javax.swing.JFrame {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(VentanaM.class.getName());
 
-    // Componentes para la vista de empleados (tabla)
     private JTable tablaEmpleados;
     private DefaultTableModel modeloTablaEmpleados;
     private JScrollPane scrollEmpleados;
     private JPanel panelEmpleados;
 
-    // Componentes para la vista de nóminas
     private JTable tablaNominas;
     private DefaultTableModel modeloTablaNominas;
     private JScrollPane scrollNominas;
     private JPanel panelNominas;
 
-    // Contenedor central con CardLayout
     private JPanel panelCentral;
     private CardLayout cardLayout;
 
     public VentanaM() {
-        initComponents(); // Crea los componentes del diseñador (jPanel1, jPanel2, botones, etc.)
+        initComponents();
 
-        // --- Reorganizar el layout del contentPane ---
         getContentPane().removeAll();
         getContentPane().setLayout(new BorderLayout(10, 10));
         
-        // Panel izquierdo (ocupa toda la altura)
         getContentPane().add(jPanel1, BorderLayout.WEST);
 
-        // Panel izquierdo: asegurar que se expanda verticalmente
         jPanel1.setPreferredSize(new Dimension(jPanel1.getPreferredSize().width, Integer.MAX_VALUE));
         getContentPane().add(jPanel1, BorderLayout.WEST);
 
@@ -76,12 +66,10 @@ public class VentanaM extends javax.swing.JFrame {
         setMinimumSize(new Dimension(900, 500));
         pack();
 
-        // --- Añadir listeners para los botones de datos ---
         jButton4.addActionListener(evt -> {
         main.cargarDatosGUI();
         cargarEmpleadosEnGUI();
         cargarNominasEnGUI();
-        // Mantener la vista actual
         if (panelNominas.isShowing()) {
             cardLayout.show(panelCentral, "nominas");
         } else {
@@ -96,12 +84,11 @@ public class VentanaM extends javax.swing.JFrame {
     });
 }
 
-    // Configura la tabla de empleados (estilo similar a la de nóminas)
     private void configurarVistaEmpleados() {
         modeloTablaEmpleados = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 4; // columna de acciones
+                return column == 4;
             }
         };
         modeloTablaEmpleados.addColumn("Nombre");
@@ -116,7 +103,6 @@ public class VentanaM extends javax.swing.JFrame {
         tablaEmpleados.setShowGrid(true);
         tablaEmpleados.setGridColor(Color.LIGHT_GRAY);
 
-        // Cabecera azul con texto blanco
         DefaultTableCellRenderer headerRenderer = new DefaultTableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value,
@@ -152,7 +138,6 @@ public class VentanaM extends javax.swing.JFrame {
         panelEmpleados.add(scrollEmpleados, BorderLayout.CENTER);
     }
 
-    // Renderer para botones de empleados
     private class BotonesEmpleadosRenderer extends JPanel implements TableCellRenderer {
         private final JButton btnEditar = new JButton("Editar");
         private final JButton btnEliminar = new JButton("Eliminar");
@@ -181,7 +166,6 @@ public class VentanaM extends javax.swing.JFrame {
         }
     }
 
-    // Editor para botones de empleados
     private class BotonesEmpleadosEditor extends AbstractCellEditor implements javax.swing.table.TableCellEditor {
         private final JPanel panel = new JPanel(new java.awt.GridLayout(1, 2, 5, 0));
         private final JButton btnEditar = new JButton("Editar");
@@ -229,7 +213,6 @@ public class VentanaM extends javax.swing.JFrame {
         }
     }
 
-    // Carga los empleados en la tabla
     private void cargarEmpleadosEnGUI() {
         modeloTablaEmpleados.setRowCount(0);
         List<Empleado> empleados = main.getEmpleados();
@@ -246,7 +229,6 @@ public class VentanaM extends javax.swing.JFrame {
         }
     }
 
-    // Configura la vista de nóminas
     private void configurarVistaNominas() {
         modeloTablaNominas = new DefaultTableModel() {
             @Override
@@ -299,7 +281,6 @@ public class VentanaM extends javax.swing.JFrame {
         panelNominas.add(scrollNominas, BorderLayout.CENTER);
     }
 
-    // Renderer para botones de nóminas
     private class BotonesNominasRenderer extends JPanel implements TableCellRenderer {
         private final JButton btnDetalle = new JButton("Ver");
         private final JButton btnEliminar = new JButton("Eliminar");
@@ -328,7 +309,6 @@ public class VentanaM extends javax.swing.JFrame {
         }
     }
 
-    // Editor para botones de nóminas
     private class BotonesNominasEditor extends AbstractCellEditor implements javax.swing.table.TableCellEditor {
         private final JPanel panel = new JPanel(new java.awt.GridLayout(1, 2, 5, 0));
         private final JButton btnDetalle = new JButton("Ver");
@@ -413,7 +393,6 @@ public class VentanaM extends javax.swing.JFrame {
         }
     }
 
-    // Diálogo para agregar empleado
     private void mostrarDialogoAgregarEmpleado() {
         String[] opciones = {"Asalariado", "Por Horas"};
         int tipo = JOptionPane.showOptionDialog(this, "Seleccione el tipo de empleado:", "Nuevo Empleado",
@@ -421,7 +400,6 @@ public class VentanaM extends javax.swing.JFrame {
         if (tipo == JOptionPane.CLOSED_OPTION) return;
         boolean esAsalariado = (tipo == 0);
 
-        // Validar nombre (no vacío, no solo números)
         String nombre = "";
         while (true) {
             nombre = JOptionPane.showInputDialog(this, "Nombre completo:", "Agregar Empleado", JOptionPane.QUESTION_MESSAGE);
@@ -438,7 +416,6 @@ public class VentanaM extends javax.swing.JFrame {
             break;
         }
 
-        // Validar puesto (no vacío, no solo números)
         String puesto = "";
         while (true) {
             puesto = JOptionPane.showInputDialog(this, "Puesto:", "Agregar Empleado", JOptionPane.QUESTION_MESSAGE);
@@ -455,7 +432,6 @@ public class VentanaM extends javax.swing.JFrame {
             break;
         }
 
-        // Validar valor monetario (positivo)
         double valor = 0;
         String mensajeValor = esAsalariado ? "Salario mensual:" : "Tarifa por hora:";
         while (true) {
@@ -497,7 +473,6 @@ public class VentanaM extends javax.swing.JFrame {
         else
             valorActual = String.valueOf(((EmpleadoPorHoras) emp).getTarifaHora());
 
-        // Panel de edición
         JPanel panel = new JPanel(new java.awt.GridLayout(0, 2, 5, 5));
         panel.add(new JLabel("Nombre:"));
         JTextField txtNombre = new JTextField(nombreActual, 15);
@@ -518,7 +493,6 @@ public class VentanaM extends javax.swing.JFrame {
         String nuevoPuesto = txtPuesto.getText().trim();
         String nuevoValorStr = txtValor.getText().trim();
 
-        // Validaciones
         if (!nuevoNombre.isEmpty() && nuevoNombre.matches("\\d+")) {
             JOptionPane.showMessageDialog(this, "El nombre no puede consistir solo en números.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
@@ -542,7 +516,6 @@ public class VentanaM extends javax.swing.JFrame {
             }
         }
 
-        // Aplicar cambios (si el campo está vacío se conserva el original)
         boolean exito;
         if (emp instanceof EmpleadoAsalariado) {
             exito = main.editarEmpleadoGUI(id, 
@@ -588,7 +561,6 @@ public class VentanaM extends javax.swing.JFrame {
         return null;
     }
 
-    // Métodos para cambiar de vista (llamados desde los botones)
     private void mostrarVistaEmpleados() {
         if (cardLayout != null) {
             cardLayout.show(panelCentral, "empleados");
@@ -605,11 +577,6 @@ public class VentanaM extends javax.swing.JFrame {
 
 
     
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -721,7 +688,7 @@ public class VentanaM extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
         jButton6.setBackground(new java.awt.Color(0, 102, 204));
-        jButton6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jButton6.setFont(new java.awt.Font("Segoe UI", 1, 14));
         jButton6.setText("Agregar empleado");
         jButton6.addActionListener(this::jButton6ActionPerformed);
 
@@ -773,21 +740,16 @@ public class VentanaM extends javax.swing.JFrame {
      
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        mostrarDialogoAgregarEmpleado();        // TODO add your handling code here:
+        mostrarDialogoAgregarEmpleado();
     }//GEN-LAST:event_jButton6ActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
-                    //javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                     break;
                 }
@@ -798,7 +760,7 @@ public class VentanaM extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new VentanaM().setVisible(true));
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    //GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -812,5 +774,5 @@ public class VentanaM extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    // End of variables declaration//GEN-END:variables
+    //GEN-END:variables
 }

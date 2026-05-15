@@ -1,10 +1,6 @@
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Contenedor serializable que almacena la lista completa de empleados
- * y la lista completa de nóminas para persistir el estado del sistema.
- */
 public class Data implements Serializable {
     private static final long serialVersionUID = 1L;
     

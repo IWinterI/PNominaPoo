@@ -10,12 +10,6 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.*;
 
-/*
- * Clase principal del sistema de nómina empresarial con interfaz gráfica (GUI).
- * Gestiona empleados (altas, bajas, ediciones) y nóminas (procesamiento, consulta, eliminación).
- * Tipo de clase: clase principal (punto de entrada para la GUI).
- */
-
 public class main {
 
     private static List<Empleado> empleados = new ArrayList<>();
@@ -23,12 +17,10 @@ public class main {
     private static RegistroNomina registroNominas = new RegistroNomina();
     private static final String ARCHIVO_DATOS = "datos_sistema.ser";
 
-    /* Genera y retorna un nuevo ID secuencial. */
     private static int generarID() {
         return siguienteID++;
     }
 
-    /* Busca un empleado por ID; retorna null si no existe. */
     private static Empleado buscarEmpleadoPorID(int id) {
         for (Empleado e : empleados) {
             if (e.getId() == id) return e;
@@ -43,7 +35,6 @@ public class main {
                 new FileOutputStream(ARCHIVO_DATOS))) {
             out.writeObject(data);
         } catch (IOException e) {
-            // Error silencioso, la GUI maneja la notificación
         }
     }
 
@@ -64,11 +55,9 @@ public class main {
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
-            // Error silencioso, la GUI maneja la notificación
         }
     }
 
-    // ========== MÉTODOS PÚBLICOS PARA LA INTERFAZ GRÁFICA ==========
     public static EmpleadoAsalariado agregarEmpleadoAsalariadoGUI(String nombre, String puesto, double salarioMensual) {
         int id = generarID();
         EmpleadoAsalariado emp = new EmpleadoAsalariado(id, nombre, puesto, salarioMensual);
@@ -112,7 +101,6 @@ public class main {
         siguienteID = max + 1;
     }
 
-    // --- Métodos para nóminas desde GUI ---
     public static RegistroNomina getRegistroNominas() {
         return registroNominas;
     }
@@ -124,7 +112,6 @@ public class main {
         }
 
         for (Empleado emp : empleados) {
-            // 1. Tarifa hora extra (positiva)
             double tarifaHoraExtra = 0;
             while (true) {
                 String input = JOptionPane.showInputDialog(parent,
@@ -143,7 +130,6 @@ public class main {
                 }
             }
 
-            // 2. Bono (opcional, pero si se aplica debe ser positivo)
             double bono = 0;
             int respBono = JOptionPane.showConfirmDialog(parent, "¿Aplica bono para " + emp.getNombre() + "?", "Bono", JOptionPane.YES_NO_OPTION);
             if (respBono == JOptionPane.YES_OPTION) {
@@ -163,7 +149,6 @@ public class main {
                 }
             }
 
-            // 3. Horas extra (opcional, entero positivo)
             int horasExtra = 0;
             int respHE = JOptionPane.showConfirmDialog(parent, "¿Aplica horas extra para " + emp.getNombre() + "?", "Horas extra", JOptionPane.YES_NO_OPTION);
             if (respHE == JOptionPane.YES_OPTION) {
@@ -183,7 +168,6 @@ public class main {
                 }
             }
 
-            // 4. Crear nómina según tipo
             Nomina nomina;
             if (emp instanceof EmpleadoAsalariado) {
                 nomina = new NominaAsalariado(new Date(), emp, tarifaHoraExtra);
@@ -195,7 +179,7 @@ public class main {
                     nomina.calcularSueldo(horasExtra);
                 else
                     nomina.calcularSueldo();
-            } else { // EmpleadoPorHoras
+            } else {
                 double horasTrabajadas = 0;
                 while (true) {
                     String input = JOptionPane.showInputDialog(parent,
