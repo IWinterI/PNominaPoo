@@ -689,11 +689,11 @@ public class VentanaM extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
 
         jButton6.setBackground(new java.awt.Color(0, 102, 204));
-        jButton6.setFont(new java.awt.Font("Segoe UI", 1, 14));
+        jButton6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton6.setText("Agregar empleado");
         jButton6.addActionListener(this::jButton6ActionPerformed);
 
-        jLabel3.setFont(new java.awt.Font("Matura MT Script Capitals", 1, 38)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Comic Sans MS", 1, 38)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(0, 102, 204));
         jLabel3.setText("Sistema De Gestion");
 
@@ -704,7 +704,7 @@ public class VentanaM extends javax.swing.JFrame {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 364, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 377, Short.MAX_VALUE)
                 .addComponent(jButton6)
                 .addContainerGap())
         );
@@ -771,7 +771,7 @@ public class VentanaM extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(() -> new VentanaM().setVisible(true));
     }
 
-    //GEN-BEGIN:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -786,5 +786,5 @@ public class VentanaM extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    //GEN-END:variables
+    // End of variables declaration//GEN-END:variables
 }
