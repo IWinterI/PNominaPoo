@@ -410,16 +410,42 @@ public class VentanaM extends javax.swing.JFrame {
                 JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
         if (tipo == JOptionPane.CLOSED_OPTION) return;
         boolean esAsalariado = (tipo == 0);
-        String nombre = JOptionPane.showInputDialog(this, "Nombre completo:", "Agregar Empleado", JOptionPane.QUESTION_MESSAGE);
-        if (nombre == null || nombre.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+
+        // Validar nombre (no vacío, no solo números)
+        String nombre = "";
+        while (true) {
+            nombre = JOptionPane.showInputDialog(this, "Nombre completo:", "Agregar Empleado", JOptionPane.QUESTION_MESSAGE);
+            if (nombre == null) return;
+            nombre = nombre.trim();
+            if (nombre.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El nombre no puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+            if (nombre.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this, "El nombre no puede consistir solo en números.", "Error", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+            break;
         }
-        String puesto = JOptionPane.showInputDialog(this, "Puesto:", "Agregar Empleado", JOptionPane.QUESTION_MESSAGE);
-        if (puesto == null || puesto.trim().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "El puesto no puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+
+        // Validar puesto (no vacío, no solo números)
+        String puesto = "";
+        while (true) {
+            puesto = JOptionPane.showInputDialog(this, "Puesto:", "Agregar Empleado", JOptionPane.QUESTION_MESSAGE);
+            if (puesto == null) return;
+            puesto = puesto.trim();
+            if (puesto.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "El puesto no puede estar vacío.", "Error", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+            if (puesto.matches("\\d+")) {
+                JOptionPane.showMessageDialog(this, "El puesto no puede consistir solo en números.", "Error", JOptionPane.ERROR_MESSAGE);
+                continue;
+            }
+            break;
         }
+
+        // Validar valor monetario (positivo)
         double valor = 0;
         String mensajeValor = esAsalariado ? "Salario mensual:" : "Tarifa por hora:";
         while (true) {
@@ -427,17 +453,21 @@ public class VentanaM extends javax.swing.JFrame {
             if (input == null) return;
             try {
                 valor = Double.parseDouble(input.trim());
-                if (valor <= 0) throw new NumberFormatException();
+                if (valor <= 0) {
+                    JOptionPane.showMessageDialog(this, "El valor debe ser un número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
                 break;
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(this, "Debe ingresar un número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Entrada inválida. Debe ser un número.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+
         try {
             if (esAsalariado)
-                main.agregarEmpleadoAsalariadoGUI(nombre.trim(), puesto.trim(), valor);
+                main.agregarEmpleadoAsalariadoGUI(nombre, puesto, valor);
             else
-                main.agregarEmpleadoPorHorasGUI(nombre.trim(), puesto.trim(), valor);
+                main.agregarEmpleadoPorHorasGUI(nombre, puesto, valor);
             cargarEmpleadosEnGUI();
             JOptionPane.showMessageDialog(this, "Empleado agregado correctamente.", "Éxito", JOptionPane.INFORMATION_MESSAGE);
         } catch (Exception ex) {
@@ -448,6 +478,7 @@ public class VentanaM extends javax.swing.JFrame {
     private void editarEmpleadoGUI(int id) {
         Empleado emp = buscarEmpleadoPorID(id);
         if (emp == null) return;
+
         String nombreActual = emp.getNombre();
         String puestoActual = emp.getPuesto();
         String valorActual = "";
@@ -455,6 +486,8 @@ public class VentanaM extends javax.swing.JFrame {
             valorActual = String.valueOf(((EmpleadoAsalariado) emp).getSalarioMensual());
         else
             valorActual = String.valueOf(((EmpleadoPorHoras) emp).getTarifaHora());
+
+        // Panel de edición
         JPanel panel = new JPanel(new java.awt.GridLayout(0, 2, 5, 5));
         panel.add(new JLabel("Nombre:"));
         JTextField txtNombre = new JTextField(nombreActual, 15);
@@ -466,28 +499,55 @@ public class VentanaM extends javax.swing.JFrame {
         panel.add(new JLabel(labelValor));
         JTextField txtValor = new JTextField(valorActual, 15);
         panel.add(txtValor);
+
         int option = JOptionPane.showConfirmDialog(this, panel, "Editar empleado ID " + id,
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (option != JOptionPane.OK_OPTION) return;
+
         String nuevoNombre = txtNombre.getText().trim();
         String nuevoPuesto = txtPuesto.getText().trim();
-        if (nuevoNombre.isEmpty() || nuevoPuesto.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Nombre y puesto no pueden estar vacíos.", "Error", JOptionPane.ERROR_MESSAGE);
+        String nuevoValorStr = txtValor.getText().trim();
+
+        // Validaciones
+        if (!nuevoNombre.isEmpty() && nuevoNombre.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "El nombre no puede consistir solo en números.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        double nuevoValor;
-        try {
-            nuevoValor = Double.parseDouble(txtValor.getText().trim());
-            if (nuevoValor <= 0) throw new NumberFormatException();
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "El valor debe ser un número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+        if (!nuevoPuesto.isEmpty() && nuevoPuesto.matches("\\d+")) {
+            JOptionPane.showMessageDialog(this, "El puesto no puede consistir solo en números.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
+
+        double nuevoValor = 0;
+        if (!nuevoValorStr.isEmpty()) {
+            try {
+                nuevoValor = Double.parseDouble(nuevoValorStr);
+                if (nuevoValor <= 0) {
+                    JOptionPane.showMessageDialog(this, "El valor debe ser un número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "Valor inválido. Debe ser un número.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        }
+
+        // Aplicar cambios (si el campo está vacío se conserva el original)
         boolean exito;
-        if (emp instanceof EmpleadoAsalariado)
-            exito = main.editarEmpleadoGUI(id, nuevoNombre, nuevoPuesto, nuevoValor, null);
-        else
-            exito = main.editarEmpleadoGUI(id, nuevoNombre, nuevoPuesto, null, nuevoValor);
+        if (emp instanceof EmpleadoAsalariado) {
+            exito = main.editarEmpleadoGUI(id, 
+                    nuevoNombre.isEmpty() ? null : nuevoNombre,
+                    nuevoPuesto.isEmpty() ? null : nuevoPuesto,
+                    nuevoValorStr.isEmpty() ? null : nuevoValor,
+                    null);
+        } else {
+            exito = main.editarEmpleadoGUI(id,
+                    nuevoNombre.isEmpty() ? null : nuevoNombre,
+                    nuevoPuesto.isEmpty() ? null : nuevoPuesto,
+                    null,
+                    nuevoValorStr.isEmpty() ? null : nuevoValor);
+        }
+
         if (exito) {
             cargarEmpleadosEnGUI();
             JOptionPane.showMessageDialog(this, "Empleado actualizado correctamente.");

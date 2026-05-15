@@ -388,100 +388,112 @@ public class main {
     }
 
     public static void procesarNominasGUI(Component parent) {
-        if (empleados.isEmpty()) {
-            JOptionPane.showMessageDialog(parent, "No hay empleados registrados.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
+    if (empleados.isEmpty()) {
+        JOptionPane.showMessageDialog(parent, "No hay empleados registrados.", "Error", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    for (Empleado emp : empleados) {
+        // 1. Tarifa hora extra (positiva)
+        double tarifaHoraExtra = 0;
+        while (true) {
+            String input = JOptionPane.showInputDialog(parent,
+                    "Empleado: " + emp.getNombre() + " (ID " + emp.getId() + ")\nIngrese la tarifa por hora extra (valor positivo):",
+                    "Procesar nómina", JOptionPane.QUESTION_MESSAGE);
+            if (input == null) return;
+            try {
+                tarifaHoraExtra = Double.parseDouble(input);
+                if (tarifaHoraExtra <= 0) {
+                    JOptionPane.showMessageDialog(parent, "La tarifa debe ser un número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                    continue;
+                }
+                break;
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(parent, "Entrada inválida. Debe ser un número.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
         }
 
-        for (Empleado emp : empleados) {
-            // 1. Tarifa hora extra
-            double tarifaHoraExtra;
+        // 2. Bono (opcional, pero si se aplica debe ser positivo)
+        double bono = 0;
+        int respBono = JOptionPane.showConfirmDialog(parent, "¿Aplica bono para " + emp.getNombre() + "?", "Bono", JOptionPane.YES_NO_OPTION);
+        if (respBono == JOptionPane.YES_OPTION) {
             while (true) {
-                String input = JOptionPane.showInputDialog(parent,
-                        "Empleado: " + emp.getNombre() + " (ID " + emp.getId() + ")\nIngrese la tarifa por hora extra:",
-                        "Procesar nómina", JOptionPane.QUESTION_MESSAGE);
-                if (input == null) return; // cancelar todo el proceso
+                String input = JOptionPane.showInputDialog(parent, "Monto del bono (positivo):");
+                if (input == null) return;
                 try {
-                    tarifaHoraExtra = Double.parseDouble(input);
-                    if (tarifaHoraExtra <= 0) throw new NumberFormatException();
+                    bono = Double.parseDouble(input);
+                    if (bono <= 0) {
+                        JOptionPane.showMessageDialog(parent, "El bono debe ser un número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
+                    }
                     break;
                 } catch (NumberFormatException e) {
-                    JOptionPane.showMessageDialog(parent, "Valor inválido. Debe ser un número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(parent, "Entrada inválida. Debe ser un número.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
+        }
 
-            // 2. Bono
-            double bono = 0;
-            int respBono = JOptionPane.showConfirmDialog(parent, "¿Aplica bono para " + emp.getNombre() + "?", "Bono", JOptionPane.YES_NO_OPTION);
-            if (respBono == JOptionPane.YES_OPTION) {
-                while (true) {
-                    String input = JOptionPane.showInputDialog(parent, "Monto del bono:");
-                    if (input == null) return;
-                    try {
-                        bono = Double.parseDouble(input);
-                        if (bono <= 0) throw new NumberFormatException();
-                        break;
-                    } catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(parent, "Monto inválido. Debe ser positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+        // 3. Horas extra (opcional, entero positivo)
+        int horasExtra = 0;
+        int respHE = JOptionPane.showConfirmDialog(parent, "¿Aplica horas extra para " + emp.getNombre() + "?", "Horas extra", JOptionPane.YES_NO_OPTION);
+        if (respHE == JOptionPane.YES_OPTION) {
+            while (true) {
+                String input = JOptionPane.showInputDialog(parent, "Cantidad de horas extra (entero positivo):");
+                if (input == null) return;
+                try {
+                    horasExtra = Integer.parseInt(input);
+                    if (horasExtra <= 0) {
+                        JOptionPane.showMessageDialog(parent, "Las horas extra deben ser un número entero positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
                     }
+                    break;
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(parent, "Entrada inválida. Debe ser un número entero.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
+        }
 
-            // 3. Horas extra
-            int horasExtra = 0;
-            int respHE = JOptionPane.showConfirmDialog(parent, "¿Aplica horas extra para " + emp.getNombre() + "?", "Horas extra", JOptionPane.YES_NO_OPTION);
-            if (respHE == JOptionPane.YES_OPTION) {
-                while (true) {
-                    String input = JOptionPane.showInputDialog(parent, "Cantidad de horas extra:");
-                    if (input == null) return;
-                    try {
-                        horasExtra = Integer.parseInt(input);
-                        if (horasExtra <= 0) throw new NumberFormatException();
-                        break;
-                    } catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(parent, "Cantidad inválida. Debe ser entero positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+        // 4. Crear nómina según tipo
+        Nomina nomina;
+        if (emp instanceof EmpleadoAsalariado) {
+            nomina = new NominaAsalariado(new Date(), emp, tarifaHoraExtra);
+            if (bono > 0 && horasExtra > 0)
+                nomina.calcularSueldo(bono, horasExtra);
+            else if (bono > 0)
+                nomina.calcularSueldo(bono);
+            else if (horasExtra > 0)
+                nomina.calcularSueldo(horasExtra);
+            else
+                nomina.calcularSueldo();
+        } else { // EmpleadoPorHoras
+            double horasTrabajadas = 0;
+            while (true) {
+                String input = JOptionPane.showInputDialog(parent,
+                        "Empleado por horas: " + emp.getNombre() + "\nHoras trabajadas en el periodo (positivo):");
+                if (input == null) return;
+                try {
+                    horasTrabajadas = Double.parseDouble(input);
+                    if (horasTrabajadas <= 0) {
+                        JOptionPane.showMessageDialog(parent, "Las horas trabajadas deben ser un número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
+                        continue;
                     }
+                    break;
+                } catch (NumberFormatException e) {
+                    JOptionPane.showMessageDialog(parent, "Entrada inválida. Debe ser un número.", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
+            nomina = new NominaPorHoras(new Date(), emp, tarifaHoraExtra, horasTrabajadas);
+            if (bono > 0 && horasExtra > 0)
+                nomina.calcularSueldo(bono, horasExtra);
+            else if (bono > 0)
+                nomina.calcularSueldo(bono);
+            else if (horasExtra > 0)
+                nomina.calcularSueldo(horasExtra);
+            else
+                nomina.calcularSueldo();
+        }
 
-            // 4. Crear nómina según tipo
-            Nomina nomina;
-            if (emp instanceof EmpleadoAsalariado) {
-                nomina = new NominaAsalariado(new Date(), emp, tarifaHoraExtra);
-                if (bono > 0 && horasExtra > 0)
-                    nomina.calcularSueldo(bono, horasExtra);
-                else if (bono > 0)
-                    nomina.calcularSueldo(bono);
-                else if (horasExtra > 0)
-                    nomina.calcularSueldo(horasExtra);
-                else
-                    nomina.calcularSueldo();
-            } else { // EmpleadoPorHoras
-                double horasTrabajadas;
-                while (true) {
-                    String input = JOptionPane.showInputDialog(parent,
-                            "Empleado por horas: " + emp.getNombre() + "\nHoras trabajadas en el periodo:");
-                    if (input == null) return;
-                    try {
-                        horasTrabajadas = Double.parseDouble(input);
-                        if (horasTrabajadas <= 0) throw new NumberFormatException();
-                        break;
-                    } catch (NumberFormatException e) {
-                        JOptionPane.showMessageDialog(parent, "Horas trabajadas inválidas. Debe ser número positivo.", "Error", JOptionPane.ERROR_MESSAGE);
-                    }
-                }
-                nomina = new NominaPorHoras(new Date(), emp, tarifaHoraExtra, horasTrabajadas);
-                if (bono > 0 && horasExtra > 0)
-                    nomina.calcularSueldo(bono, horasExtra);
-                else if (bono > 0)
-                    nomina.calcularSueldo(bono);
-                else if (horasExtra > 0)
-                    nomina.calcularSueldo(horasExtra);
-                else
-                    nomina.calcularSueldo();
-            }
-
-            registroNominas.Cargar_Nomina(nomina);
+        registroNominas.Cargar_Nomina(nomina);
         }
 
         JOptionPane.showMessageDialog(parent, "Nóminas procesadas correctamente.\nTotal de nóminas registradas: " + registroNominas.getNominas().size(),
