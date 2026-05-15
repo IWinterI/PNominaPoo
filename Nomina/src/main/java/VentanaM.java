@@ -52,8 +52,10 @@ public class VentanaM extends javax.swing.JFrame {
         jPanel1.setPreferredSize(new Dimension(jPanel1.getPreferredSize().width, Integer.MAX_VALUE));
         getContentPane().add(jPanel1, BorderLayout.WEST);
 
-        // Panel superior: ocupará todo el ancho restante
+        
+        jPanel2.setPreferredSize(new Dimension(800, jPanel2.getPreferredSize().height));
         getContentPane().add(jPanel2, BorderLayout.NORTH);
+
         
         configurarVistaEmpleados();
         configurarVistaNominas();
@@ -161,11 +163,11 @@ public class VentanaM extends javax.swing.JFrame {
             Dimension btnSize = new Dimension(60, 25);
             btnEditar.setPreferredSize(btnSize);
             btnEditar.setBackground(new Color(100, 150, 255));
-            btnEditar.setForeground(Color.WHITE);
+            btnEditar.setForeground(Color.BLACK);
             btnEditar.setFont(new Font("Segoe UI", Font.BOLD, 11));
             btnEliminar.setPreferredSize(btnSize);
             btnEliminar.setBackground(Color.RED);
-            btnEliminar.setForeground(Color.WHITE);
+            btnEliminar.setForeground(Color.BLACK);
             btnEliminar.setFont(new Font("Segoe UI", Font.BOLD, 11));
             add(btnEditar);
             add(btnEliminar);
@@ -191,11 +193,11 @@ public class VentanaM extends javax.swing.JFrame {
             Dimension btnSize = new Dimension(60, 25);
             btnEditar.setPreferredSize(btnSize);
             btnEditar.setBackground(new Color(100, 150, 255));
-            btnEditar.setForeground(Color.WHITE);
+            btnEditar.setForeground(Color.BLACK);
             btnEditar.setFont(new Font("Segoe UI", Font.BOLD, 11));
             btnEliminar.setPreferredSize(btnSize);
             btnEliminar.setBackground(Color.RED);
-            btnEliminar.setForeground(Color.WHITE);
+            btnEliminar.setForeground(Color.BLACK);
             btnEliminar.setFont(new Font("Segoe UI", Font.BOLD, 11));
             btnEditar.addActionListener(e -> {
                 int id = obtenerIdEmpleado(row);
@@ -308,11 +310,11 @@ public class VentanaM extends javax.swing.JFrame {
             Dimension btnSize = new Dimension(60, 25);
             btnDetalle.setPreferredSize(btnSize);
             btnDetalle.setBackground(new Color(100, 150, 255));
-            btnDetalle.setForeground(Color.WHITE);
+            btnDetalle.setForeground(Color.BLACK);
             btnDetalle.setFont(new Font("Segoe UI", Font.BOLD, 11));
             btnEliminar.setPreferredSize(btnSize);
             btnEliminar.setBackground(Color.RED);
-            btnEliminar.setForeground(Color.WHITE);
+            btnEliminar.setForeground(Color.BLACK);
             btnEliminar.setFont(new Font("Segoe UI", Font.BOLD, 11));
             add(btnDetalle);
             add(btnEliminar);
@@ -338,11 +340,11 @@ public class VentanaM extends javax.swing.JFrame {
             Dimension btnSize = new Dimension(60, 25);
             btnDetalle.setPreferredSize(btnSize);
             btnDetalle.setBackground(new Color(100, 150, 255));
-            btnDetalle.setForeground(Color.WHITE);
+            btnDetalle.setForeground(Color.BLACK);
             btnDetalle.setFont(new Font("Segoe UI", Font.BOLD, 11));
             btnEliminar.setPreferredSize(btnSize);
             btnEliminar.setBackground(Color.RED);
-            btnEliminar.setForeground(Color.WHITE);
+            btnEliminar.setForeground(Color.BLACK);
             btnEliminar.setFont(new Font("Segoe UI", Font.BOLD, 11));
             btnDetalle.addActionListener(e -> {
                 verDetalleNomina(row);
@@ -625,7 +627,6 @@ public class VentanaM extends javax.swing.JFrame {
         jButton5 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jButton6 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
 
         jMenuItem1.setText("jMenuItem1");
 
@@ -721,21 +722,15 @@ public class VentanaM extends javax.swing.JFrame {
 
         jButton6.setBackground(new java.awt.Color(0, 102, 204));
         jButton6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton6.setForeground(new java.awt.Color(255, 255, 255));
         jButton6.setText("Agregar empleado");
         jButton6.addActionListener(this::jButton6ActionPerformed);
-
-        jTextField1.setBackground(new java.awt.Color(250, 250, 250));
-        jTextField1.setMaximumSize(new java.awt.Dimension(64, 22));
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(55, Short.MAX_VALUE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 300, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
+                .addContainerGap(387, Short.MAX_VALUE)
                 .addComponent(jButton6)
                 .addContainerGap())
         );
@@ -743,9 +738,7 @@ public class VentanaM extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(14, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jButton6, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16))
         );
 
@@ -794,7 +787,8 @@ public class VentanaM extends javax.swing.JFrame {
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    //javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                     break;
                 }
             }
@@ -818,6 +812,5 @@ public class VentanaM extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
